@@ -1,0 +1,221 @@
+compilation:
+  cloud_properties: {}
+  network: compilation
+  reuse_compilation_vms: true
+  workers: 6
+director_uuid: b02f8ab5-b63c-4f08-b144-89f96810a022
+jobs:
+- instances: 1
+  name: nats_z1
+  networks:
+  - name: default
+    static_ips:
+    - 10.244.0.6
+  properties:
+    metron_agent:
+      zone: z1
+    networks:
+      apps: default
+  resource_pool: default
+  templates:
+  - name: nats
+    release: prego
+  - name: nats_stream_forwarder
+    release: prego
+  - name: metron_agent
+    release: lamb
+- instances: 1
+  name: hm9000_z1
+  networks:
+  - name: default
+  properties:
+    metron_agent:
+      zone: z1
+    networks:
+      apps: default
+  resource_pool: default
+  templates:
+  - name: hm9000
+    release: prego
+  - name: metron_agent
+    release: lamb
+- instances: 1
+  name: runner_z1
+  networks:
+  - name: default
+    static_ips:
+    - 10.244.0.26
+  properties:
+    dea_next:
+      zone: z1
+    metron_agent:
+      zone: z1
+    networks:
+      apps: default
+  resource_pool: default
+  templates:
+  - name: dea_next
+    release: prego
+  - name: dea_logging_agent
+    release: prego
+  - name: metron_agent
+    release: lamb
+  update:
+    max_in_flight: 1
+name: prego
+networks:
+- name: compilation
+  subnets:
+  - cloud_properties: {}
+    range: 10.244.1.0/30
+    reserved:
+    - 10.244.1.1
+  - cloud_properties: {}
+    range: 10.244.1.4/30
+    reserved:
+    - 10.244.1.5
+  - cloud_properties: {}
+    range: 10.244.1.8/30
+    reserved:
+    - 10.244.1.9
+  - cloud_properties: {}
+    range: 10.244.1.12/30
+    reserved:
+    - 10.244.1.13
+  - cloud_properties: {}
+    range: 10.244.1.16/30
+    reserved:
+    - 10.244.1.17
+  - cloud_properties: {}
+    range: 10.244.1.20/30
+    reserved:
+    - 10.244.1.21
+  - cloud_properties: {}
+    range: 10.244.1.24/30
+    reserved:
+    - 10.244.1.25
+  - cloud_properties: {}
+    range: 10.244.1.28/30
+    reserved:
+    - 10.244.1.29
+  - cloud_properties: {}
+    range: 10.244.1.32/30
+    reserved:
+    - 10.244.1.33
+  - cloud_properties: {}
+    range: 10.244.1.36/30
+    reserved:
+    - 10.244.1.37
+  - cloud_properties: {}
+    range: 10.244.1.40/30
+    reserved:
+    - 10.244.1.41
+  - cloud_properties: {}
+    range: 10.244.1.44/30
+    reserved:
+    - 10.244.1.45
+- name: default
+  subnets:
+  - cloud_properties: {}
+    range: 10.244.0.4/30
+    reserved:
+    - 10.244.0.5
+    static:
+    - 10.244.0.6
+  - cloud_properties: {}
+    range: 10.244.0.24/30
+    reserved:
+    - 10.244.0.25
+    static:
+    - 10.244.0.26
+  - cloud_properties: {}
+    range: 10.244.0.60/30
+    reserved:
+    - 10.244.0.61
+  - cloud_properties: {}
+    range: 10.244.0.64/30
+    reserved:
+    - 10.244.0.65
+  - cloud_properties: {}
+    range: 10.244.0.68/30
+    reserved:
+    - 10.244.0.69
+properties:
+  cc:
+    bulk_api_password: bulk-password
+    internal_api_password: internal-password
+    srv_api_uri: https://api.10.244.0.34.xip.io
+  consul:
+    agent:
+      log_level: null
+      servers:
+        lan:
+        - 10.244.0.54
+  dea_next:
+    advertise_interval_in_seconds: 5
+    allow_host_access: null
+    allow_networks: []
+    default_health_check_timeout: 60
+    deny_networks: []
+    directory_server_protocol: https
+    disk_mb: 32768
+    disk_overcommit_factor: 3
+    evacuation_bail_out_time_in_seconds: 0
+    heartbeat_interval_in_seconds: 10
+    instance_disk_inode_limit: 200000
+    kernel_network_tuning_enabled: false
+    logging_level: debug
+    memory_mb: 8192
+    memory_overcommit_factor: 3
+    rlimit_core: 0
+    staging_disk_inode_limit: 200000
+    staging_disk_limit_mb: 6144
+    staging_memory_limit_mb: 1024
+  disk_quota_enabled: false
+  domain: 10.244.0.34.xip.io
+  etcd:
+    machines:
+    - 10.244.0.42
+  hm9000:
+    url: https://hm9000.10.244.0.34.xip.io
+  loggregator_endpoint:
+    shared_secret: PLACEHOLDER-LOGGREGATOR-SECRET
+  metron_agent:
+    deployment: foo
+  metron_endpoint:
+    shared_secret: PLACEHOLDER-LOGGREGATOR-SECRET
+  nats:
+    address: 10.244.0.6
+    debug: false
+    machines:
+    - 10.244.0.6
+    monitor_port: 4221
+    password: nats
+    port: 4222
+    prof_port: 0
+    trace: false
+    user: nats
+  request_timeout_in_seconds: 900
+  ssl:
+    skip_cert_verify: true
+  support_address: http://support.cloudfoundry.com
+  system_domain: 10.244.0.34.xip.io
+releases:
+- name: prego
+  version: latest
+- name: lamb
+  version: latest
+resource_pools:
+- cloud_properties: {}
+  name: default
+  network: default
+  stemcell:
+    name: bosh-warden-boshlite-ubuntu-trusty-go_agent
+    version: latest
+update:
+  canaries: 1
+  canary_watch_time: 1000-180000
+  max_in_flight: 50
+  serial: true
+  update_watch_time: 1000-180000
+

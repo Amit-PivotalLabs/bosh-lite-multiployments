@@ -1,0 +1,132 @@
+compilation:
+  cloud_properties: {}
+  network: compilation
+  reuse_compilation_vms: true
+  workers: 6
+director_uuid: b02f8ab5-b63c-4f08-b144-89f96810a022
+jobs:
+- instances: 1
+  name: consul
+  networks:
+  - name: default
+    static_ips:
+    - 10.244.0.54
+  persistent_disk: 1024
+  properties:
+    consul:
+      agent:
+        mode: server
+    metron_agent:
+      zone: z1
+  resource_pool: default
+  templates:
+  - name: consul_agent
+    release: consul
+  - name: metron_agent
+    release: lamb
+  update:
+    max_in_flight: 1
+    serial: true
+name: consul
+networks:
+- name: compilation
+  subnets:
+  - cloud_properties: {}
+    range: 10.244.1.0/30
+    reserved:
+    - 10.244.1.1
+  - cloud_properties: {}
+    range: 10.244.1.4/30
+    reserved:
+    - 10.244.1.5
+  - cloud_properties: {}
+    range: 10.244.1.8/30
+    reserved:
+    - 10.244.1.9
+  - cloud_properties: {}
+    range: 10.244.1.12/30
+    reserved:
+    - 10.244.1.13
+  - cloud_properties: {}
+    range: 10.244.1.16/30
+    reserved:
+    - 10.244.1.17
+  - cloud_properties: {}
+    range: 10.244.1.20/30
+    reserved:
+    - 10.244.1.21
+  - cloud_properties: {}
+    range: 10.244.1.24/30
+    reserved:
+    - 10.244.1.25
+  - cloud_properties: {}
+    range: 10.244.1.28/30
+    reserved:
+    - 10.244.1.29
+  - cloud_properties: {}
+    range: 10.244.1.32/30
+    reserved:
+    - 10.244.1.33
+  - cloud_properties: {}
+    range: 10.244.1.36/30
+    reserved:
+    - 10.244.1.37
+  - cloud_properties: {}
+    range: 10.244.1.40/30
+    reserved:
+    - 10.244.1.41
+  - cloud_properties: {}
+    range: 10.244.1.44/30
+    reserved:
+    - 10.244.1.45
+- name: default
+  subnets:
+  - cloud_properties: {}
+    range: 10.244.0.8/30
+    reserved:
+    - 10.244.0.9
+  - cloud_properties: {}
+    range: 10.244.0.52/30
+    reserved:
+    - 10.244.0.53
+    static:
+    - 10.244.0.54
+properties:
+  consul:
+    agent:
+      log_level: null
+      servers:
+        lan:
+        - 10.244.0.54
+  etcd:
+    machines:
+    - 10.244.0.42
+  loggregator_endpoint:
+    shared_secret: PLACEHOLDER-LOGGREGATOR-SECRET
+  metron_agent:
+    deployment: foo
+  nats:
+    machines:
+    - 10.244.0.6
+    password: nats
+    port: 4222
+    user: nats
+releases:
+- name: consul
+  version: latest
+- name: lamb
+  version: latest
+resource_pools:
+- cloud_properties: {}
+  name: default
+  network: default
+  stemcell:
+    name: bosh-warden-boshlite-ubuntu-trusty-go_agent
+    version: latest
+update:
+  canaries: 1
+  canary_watch_time: 1000-180000
+  max_in_flight: 50
+  serial: true
+  update_watch_time: 1000-180000
+

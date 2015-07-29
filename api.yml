@@ -1,0 +1,403 @@
+compilation:
+  cloud_properties: {}
+  network: compilation
+  reuse_compilation_vms: true
+  workers: 6
+director_uuid: b02f8ab5-b63c-4f08-b144-89f96810a022
+jobs:
+- instances: 1
+  name: api_z1
+  networks:
+  - name: default
+  persistent_disk: 8192
+  properties:
+    consul:
+      agent:
+        services:
+          cloud_controller_ng: {}
+          routing-api: {}
+    metron_agent:
+      zone: z1
+    networks:
+      apps: default
+    nfs_server:
+      address: null
+      allow_from_entries:
+      - 10.244.0.0/30
+      - 10.244.2.0/30
+      share: null
+  resource_pool: default
+  templates:
+  - name: cloud_controller_ng
+    release: api
+  - name: cloud_controller_clock
+    release: api
+  - name: cloud_controller_worker
+    release: api
+  - name: routing-api
+    release: routing
+  - name: metron_agent
+    release: lamb
+  - name: statsd-injector
+    release: lamb
+  - name: consul_agent
+    release: consul
+  - name: nfs_mounter
+    release: api
+name: api
+networks:
+- name: compilation
+  subnets:
+  - cloud_properties: {}
+    range: 10.244.1.0/30
+    reserved:
+    - 10.244.1.1
+  - cloud_properties: {}
+    range: 10.244.1.4/30
+    reserved:
+    - 10.244.1.5
+  - cloud_properties: {}
+    range: 10.244.1.8/30
+    reserved:
+    - 10.244.1.9
+  - cloud_properties: {}
+    range: 10.244.1.12/30
+    reserved:
+    - 10.244.1.13
+  - cloud_properties: {}
+    range: 10.244.1.16/30
+    reserved:
+    - 10.244.1.17
+  - cloud_properties: {}
+    range: 10.244.1.20/30
+    reserved:
+    - 10.244.1.21
+  - cloud_properties: {}
+    range: 10.244.1.24/30
+    reserved:
+    - 10.244.1.25
+  - cloud_properties: {}
+    range: 10.244.1.28/30
+    reserved:
+    - 10.244.1.29
+  - cloud_properties: {}
+    range: 10.244.1.32/30
+    reserved:
+    - 10.244.1.33
+  - cloud_properties: {}
+    range: 10.244.1.36/30
+    reserved:
+    - 10.244.1.37
+  - cloud_properties: {}
+    range: 10.244.1.40/30
+    reserved:
+    - 10.244.1.41
+  - cloud_properties: {}
+    range: 10.244.1.44/30
+    reserved:
+    - 10.244.1.45
+- name: default
+  subnets:
+  - cloud_properties: {}
+    range: 10.244.0.0/30
+    reserved:
+    - 10.244.0.1
+properties:
+  app_domains:
+  - 10.244.0.34.xip.io
+  cc:
+    allow_app_ssh_access: true
+    allowed_cors_domains: []
+    app_events:
+      cutoff_age_in_days: 31
+    app_usage_events:
+      cutoff_age_in_days: 31
+    audit_events:
+      cutoff_age_in_days: 31
+    broker_client_default_async_poll_interval_seconds: 60
+    broker_client_max_async_poll_duration_minutes: 10080
+    broker_client_timeout_seconds: 70
+    buildpacks:
+      buildpack_directory_key: 10.244.0.34.xip.io-cc-buildpacks
+      cdn: null
+      fog_connection:
+        local_root: /var/vcap/store
+        provider: Local
+    bulk_api_password: bulk-password
+    client_max_body_size: 15M
+    db_encryption_key: db-encryption-key
+    db_logging_level: debug2
+    default_app_disk_in_mb: 1024
+    default_app_memory: 256
+    default_buildpacks:
+    - name: staticfile_buildpack
+      package: buildpack_staticfile
+    - name: java_buildpack
+      package: buildpack_java
+    - name: ruby_buildpack
+      package: buildpack_ruby
+    - name: nodejs_buildpack
+      package: buildpack_nodejs
+    - name: go_buildpack
+      package: buildpack_go
+    - name: python_buildpack
+      package: buildpack_python
+    - name: php_buildpack
+      package: buildpack_php
+    - name: binary_buildpack
+      package: buildpack_binary
+    default_health_check_timeout: 60
+    default_quota_definition: default
+    default_running_security_groups:
+    - public_networks
+    - dns
+    - services
+    - load_balancer
+    - user_bosh_deployments
+    default_staging_security_groups:
+    - public_networks
+    - dns
+    default_to_diego_backend: false
+    development_mode: false
+    directories: null
+    disable_custom_buildpacks: false
+    droplets:
+      cdn: null
+      droplet_directory_key: 10.244.0.34.xip.io-cc-droplets
+      fog_connection:
+        local_root: /var/vcap/store
+        provider: Local
+    external_host: api
+    external_protocol: http
+    install_buildpacks:
+    - name: staticfile_buildpack
+      package: buildpack_staticfile
+    - name: java_buildpack
+      package: buildpack_java
+    - name: ruby_buildpack
+      package: buildpack_ruby
+    - name: nodejs_buildpack
+      package: buildpack_nodejs
+    - name: go_buildpack
+      package: buildpack_go
+    - name: python_buildpack
+      package: buildpack_python
+    - name: php_buildpack
+      package: buildpack_php
+    - name: binary_buildpack
+      package: buildpack_binary
+    internal_api_password: internal-password
+    internal_api_user: internal_user
+    jobs:
+      app_bits_packer:
+        timeout_in_seconds: null
+      app_events_cleanup:
+        timeout_in_seconds: null
+      app_usage_events_cleanup:
+        timeout_in_seconds: null
+      blobstore_delete:
+        timeout_in_seconds: null
+      blobstore_upload:
+        timeout_in_seconds: null
+      droplet_deletion:
+        timeout_in_seconds: null
+      droplet_upload:
+        timeout_in_seconds: null
+      generic:
+        number_of_workers: null
+      global:
+        timeout_in_seconds: 14400
+      model_deletion:
+        timeout_in_seconds: null
+    logging_level: debug2
+    maximum_app_disk_in_mb: 2048
+    maximum_health_check_timeout: 180
+    min_cli_version: 6.0.0
+    min_recommended_cli_version: 6.10.0
+    newrelic:
+      capture_params: false
+      developer_mode: false
+      environment_name: cf-warden
+      license_key: null
+      monitor_mode: false
+      transaction_tracer:
+        enabled: true
+        record_sql: obfuscated
+    packages:
+      app_package_directory_key: 10.244.0.34.xip.io-cc-packages
+      cdn: null
+      fog_connection:
+        local_root: /var/vcap/store
+        provider: Local
+      max_package_size: 1073741824
+    quota_definitions:
+      default:
+        memory_limit: 10240
+        non_basic_services_allowed: true
+        total_routes: 1000
+        total_services: 100
+    resource_pool:
+      cdn: null
+      fog_connection:
+        local_root: /var/vcap/store
+        provider: Local
+      resource_directory_key: 10.244.0.34.xip.io-cc-resources
+    security_group_definitions:
+    - name: public_networks
+      rules:
+      - destination: 0.0.0.0-9.255.255.255
+        protocol: all
+      - destination: 11.0.0.0-169.253.255.255
+        protocol: all
+      - destination: 169.255.0.0-172.15.255.255
+        protocol: all
+      - destination: 172.32.0.0-192.167.255.255
+        protocol: all
+      - destination: 192.169.0.0-255.255.255.255
+        protocol: all
+    - name: dns
+      rules:
+      - destination: 0.0.0.0/0
+        ports: "53"
+        protocol: tcp
+      - destination: 0.0.0.0/0
+        ports: "53"
+        protocol: udp
+    - name: services
+      rules:
+      - destination: 10.244.1.0/24
+        protocol: all
+      - destination: 10.244.3.0/24
+        protocol: all
+    - name: load_balancer
+      rules:
+      - destination: 10.244.0.34
+        protocol: all
+    - name: user_bosh_deployments
+      rules:
+      - destination: 10.244.4.0-10.254.0.0
+        protocol: all
+    srv_api_uri: https://api.10.244.0.34.xip.io
+    stacks: null
+    staging_upload_password: upload-password
+    staging_upload_user: upload-user
+    system_buildpacks:
+    - name: staticfile_buildpack
+      package: buildpack_staticfile
+    - name: java_buildpack
+      package: buildpack_java
+    - name: ruby_buildpack
+      package: buildpack_ruby
+    - name: nodejs_buildpack
+      package: buildpack_nodejs
+    - name: go_buildpack
+      package: buildpack_go
+    - name: python_buildpack
+      package: buildpack_python
+    - name: php_buildpack
+      package: buildpack_php
+    - name: binary_buildpack
+      package: buildpack_binary
+    thresholds:
+      api:
+        alert_if_above_mb: null
+        restart_if_above_mb: null
+        restart_if_consistently_above_mb: null
+      worker:
+        alert_if_above_mb: null
+        restart_if_above_mb: null
+        restart_if_consistently_above_mb: null
+    user_buildpacks: []
+    users_can_select_backend: true
+  ccdb:
+    address: 10.244.0.30
+    databases:
+    - citext: true
+      name: ccdb
+      tag: cc
+    db_scheme: postgres
+    port: 5524
+    roles:
+    - name: ccadmin
+      password: admin
+      tag: admin
+  consul:
+    agent:
+      log_level: null
+      servers:
+        lan:
+        - 10.244.0.54
+  domain: 10.244.0.34.xip.io
+  etcd:
+    machines:
+    - 10.244.0.42
+  hm9000:
+    url: https://hm9000.10.244.0.34.xip.io
+  loggregator_endpoint:
+    shared_secret: PLACEHOLDER-LOGGREGATOR-SECRET
+  metron_agent:
+    deployment: foo
+  nats:
+    machines:
+    - 10.244.0.6
+    password: nats
+    port: 4222
+    user: nats
+  nfs_server:
+    address: null
+    allow_from_entries:
+    - 10.244.0.0/30
+    - 10.244.2.0/30
+    share: null
+  request_timeout_in_seconds: 900
+  router:
+    cipher_suites: null
+    enable_ssl: null
+    requested_route_registration_interval_in_seconds: null
+    secure_cookies: null
+    ssl_cert: null
+    ssl_key: null
+    ssl_skip_validation: true
+    status:
+      password: router
+      user: router
+  ssl:
+    skip_cert_verify: true
+  support_address: http://support.cloudfoundry.com
+  system_domain: 10.244.0.34.xip.io
+  system_domain_organization: null
+  uaa:
+    clients:
+      cloud_controller_username_lookup:
+        secret: cloud-controller-username-lookup-secret
+    jwt:
+      verification_key: |+
+        -----BEGIN PUBLIC KEY-----
+        MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDHFr+KICms+tuT1OXJwhCUmR2d
+        KVy7psa8xzElSyzqx7oJyfJ1JZyOzToj9T5SfTIq396agbHJWVfYphNahvZ/7uMX
+        qHxf+ZH9BL1gk9Y6kCnbM5R60gfwjyW1/dQPjOzn9N394zd2FJoFHwdq9Qs0wBug
+        spULZVNRxq7veq/fzwIDAQAB
+        -----END PUBLIC KEY-----
+releases:
+- name: api
+  version: latest
+- name: routing
+  version: latest
+- name: lamb
+  version: latest
+- name: consul
+  version: latest
+resource_pools:
+- cloud_properties: {}
+  name: default
+  network: default
+  stemcell:
+    name: bosh-warden-boshlite-ubuntu-trusty-go_agent
+    version: latest
+update:
+  canaries: 1
+  canary_watch_time: 1000-180000
+  max_in_flight: 50
+  serial: true
+  update_watch_time: 1000-180000
+
